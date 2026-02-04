@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+@layer base {
+  body {
+    @apply bg-sand text-ink font-body;
+    min-height: 100vh;
+  }
+}
+
+::selection {
+  background: rgba(249, 115, 22, 0.18);
+}
+
+@layer utilities {
+  .bg-grid-dots {
+    background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .glass-panel {
+    @apply bg-white/70 border border-white/60 shadow-soft backdrop-blur-xl;
+  }
+
+  .glass-muted {
+    @apply bg-white/50 border border-white/50 backdrop-blur-lg;
+  }
+
+  .text-shadow {
+    text-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+  }
+}
