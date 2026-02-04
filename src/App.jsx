@@ -16,7 +16,7 @@ const SectionCard = ({ children, className = '' }) => (
 );
 
 const MetricCard = ({ icon: Icon, label, value, accent = 'text-ink' }) => (
-  <div className="rounded-xl border border-white/70 bg-white/80 p-4 shadow-sm">
+  <div className="h-full rounded-xl border border-white/70 bg-white/80 p-4 shadow-sm">
     <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-400">
       <span>{label}</span>
       {Icon ? <Icon size={14} className="text-slate-400" /> : null}
@@ -537,7 +537,7 @@ export default function App() {
               )}
             </SectionCard>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-3 md:items-stretch">
               <MetricCard
                 icon={TrendingUp}
                 label="Final multiplier"
