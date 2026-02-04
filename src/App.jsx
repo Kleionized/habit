@@ -439,8 +439,8 @@ export default function App() {
           </button>
         </header>
 
-        <section className="grid gap-8 lg:grid-cols-[340px_1fr]">
-          <SectionCard className="space-y-5 p-5">
+        <section className="grid gap-8 lg:grid-cols-[340px_1fr] lg:items-start">
+          <SectionCard className="space-y-5 p-5 self-start">
 
             <ControlGroup icon={Target} label="Starting baseline">
                 <input
@@ -465,7 +465,7 @@ export default function App() {
                 />
                 <div className="flex justify-between text-[11px] text-slate-400">
                   <span>0%</span>
-                  <span>5%</span>
+                  <span className="text-slate-600">{dailyRate.toFixed(1)}%</span>
                 </div>
             </ControlGroup>
 
@@ -481,7 +481,9 @@ export default function App() {
                 />
                 <div className="flex justify-between text-[11px] text-slate-400">
                   <span>1x</span>
-                  <span>7x</span>
+                  <span className="text-slate-600">
+                    {frequency === 7 ? 'Daily' : `${frequency}/week`}
+                  </span>
                 </div>
             </ControlGroup>
 
