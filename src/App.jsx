@@ -55,7 +55,7 @@ const formatCompact = (num) => {
   const sign = num < 0 ? '-' : '';
   const abs = Math.abs(num);
   if (abs < 1000) return `${sign}${abs.toFixed(abs < 10 ? 2 : 1)}`;
-  const suffixes = ['', 'k', 'M', 'B', 'T'];
+  const suffixes = ['', 'k', 'M', 'B', 'T', 'Q', 'Qi', 'Sx', 'Sp', 'Oc', 'No'];
   const magnitude = Math.min(suffixes.length - 1, Math.floor(Math.log10(abs) / 3));
   const shortValue = abs / Math.pow(1000, magnitude);
   return `${sign}${shortValue.toFixed(shortValue < 10 ? 2 : 1)}${suffixes[magnitude]}`;
