@@ -322,12 +322,6 @@ export default function App() {
     setTimeValue(timeLimits[newUnit].min);
   };
 
-  const presets = [
-    { label: 'Starter', dailyRate: 0.5, frequency: 3 },
-    { label: 'Steady', dailyRate: 1.0, frequency: 5 },
-    { label: 'Intense', dailyRate: 2.0, frequency: 7 }
-  ];
-
   const resetDefaults = () => {
     setBaseline(1);
     setDailyRate(1.0);
@@ -445,8 +439,8 @@ export default function App() {
           </button>
         </header>
 
-        <section className="grid gap-8 lg:grid-cols-[360px_1fr]">
-          <SectionCard className="space-y-6">
+        <section className="grid gap-8 lg:grid-cols-[340px_1fr]">
+          <SectionCard className="space-y-5 p-5">
 
             <ControlGroup icon={Target} label="Starting baseline">
                 <input
@@ -513,21 +507,6 @@ export default function App() {
                 </div>
             </ControlGroup>
 
-            <div className="grid grid-cols-3 gap-2">
-              {presets.map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  onClick={() => {
-                    setDailyRate(preset.dailyRate);
-                    setFrequency(preset.frequency);
-                  }}
-                  className="rounded-lg border border-slate-200/80 bg-white px-2 py-2 text-xs font-semibold text-slate-600 transition hover:text-slate-900"
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
           </SectionCard>
 
           <div className="flex flex-col gap-6">
