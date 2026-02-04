@@ -4,10 +4,8 @@ import {
   BarChart3,
   Calendar,
   Clock,
-  Info,
   List,
   Repeat,
-  Settings2,
   Target,
   TrendingUp,
   Zap
@@ -17,28 +15,23 @@ const SectionCard = ({ children, className = '' }) => (
   <div className={`glass-panel rounded-2xl p-6 ${className}`}>{children}</div>
 );
 
-const MetricCard = ({ icon: Icon, label, value, hint, accent = 'text-ink' }) => (
+const MetricCard = ({ icon: Icon, label, value, accent = 'text-ink' }) => (
   <div className="rounded-xl border border-white/70 bg-white/80 p-4 shadow-sm">
     <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-400">
       <span>{label}</span>
       {Icon ? <Icon size={14} className="text-slate-400" /> : null}
     </div>
     <div className={`mt-2 text-2xl font-display ${accent}`}>{value}</div>
-    {hint ? <p className="mt-1 text-xs text-slate-500">{hint}</p> : null}
   </div>
 );
 
-const ControlGroup = ({ icon: Icon, label, hint, headerRight, children }) => (
-  <div className="space-y-3">
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-        {Icon ? <Icon size={16} className="text-slate-500" /> : null}
-        <span>{label}</span>
-      </div>
-      {headerRight}
+const ControlGroup = ({ icon: Icon, label, children }) => (
+  <div className="space-y-2">
+    <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+      {Icon ? <Icon size={16} className="text-slate-500" /> : null}
+      <span>{label}</span>
     </div>
     {children}
-    {hint ? <p className="text-xs text-slate-500">{hint}</p> : null}
   </div>
 );
 
@@ -347,11 +340,7 @@ export default function App() {
     tableData,
     chartData,
     finalValue,
-    totalGrowth,
-    maxDays,
-    eventsPerDay,
     totalSessions,
-    timeLabel,
     doublingDay
   } = useMemo(() => {
     const baselineValue = Math.max(0.1, baseline || 1);
@@ -435,64 +424,31 @@ export default function App() {
       tableData: filteredMilestones,
       chartData: chartPoints,
       finalValue: calculate(max).value,
-      totalGrowth: calculate(max).percentage,
-      maxDays: max,
-      eventsPerDay: events,
       totalSessions: Math.round(max * events),
-      timeLabel: `${timeValue} ${timeLimits[timeUnit].label.toLowerCase()}`,
       doublingDay: daysToDouble
     };
   }, [baseline, dailyRate, frequency, timeUnit, timeValue]);
 
   return (
     <div className="min-h-screen">
-      <div className="relative overflow-hidden">
-        <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-amber-200/60 blur-3xl motion-safe:animate-float-slow" />
-        <div className="pointer-events-none absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-emerald-200/50 blur-3xl motion-safe:animate-float-slow" />
-        <div className="pointer-events-none absolute inset-0 bg-grid-dots opacity-40" />
+      <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12 lg:py-16">
+        <header className="flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-display tracking-tight text-slate-900 sm:text-4xl">
+            Habit Visualizer
+          </h1>
+          <button
+            type="button"
+            onClick={resetDefaults}
+            className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-600 transition hover:text-slate-900"
+          >
+            Reset
+          </button>
+        </header>
 
-        <main className="relative mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-12 lg:py-16">
-          <header className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-3">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Habit Momentum Lab</p>
-              <h1 className="text-4xl font-display tracking-tight text-slate-900 sm:text-5xl">
-                Habit Trajectory Visualizer
-              </h1>
-              <p className="max-w-2xl text-base text-slate-600 sm:text-lg">
-                Model how small daily improvements compound. Tune your cadence, pick a time horizon,
-                and watch your trajectory unfold.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={resetDefaults}
-                className="rounded-full border border-slate-200/80 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-600 transition hover:text-slate-900"
-              >
-                Reset
-              </button>
-              <div className="rounded-full bg-white/70 px-4 py-2 text-xs font-semibold text-slate-500">
-                Horizon: {timeLabel}
-              </div>
-            </div>
-          </header>
+        <section className="grid gap-8 lg:grid-cols-[360px_1fr]">
+          <SectionCard className="space-y-6">
 
-          <section className="grid gap-8 lg:grid-cols-[360px_1fr]">
-            <SectionCard className="space-y-7">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Settings2 size={16} className="text-slate-500" />
-                  Inputs
-                </div>
-                <span className="text-xs font-medium uppercase tracking-wider text-slate-400">Live</span>
-              </div>
-
-              <ControlGroup
-                icon={Target}
-                label="Starting baseline"
-                hint="The level you begin from. Use 1.0 for neutral." 
-                headerRight={<span className="text-sm font-display text-slate-800">{baseline.toFixed(1)}x</span>}
-              >
+            <ControlGroup icon={Target} label="Starting baseline">
                 <input
                   type="number"
                   min="0.1"
@@ -501,14 +457,9 @@ export default function App() {
                   onChange={(e) => setBaseline(Math.max(0.1, Number(e.target.value) || 0.1))}
                   className="w-full rounded-lg border border-slate-200/70 bg-white/80 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
                 />
-              </ControlGroup>
+            </ControlGroup>
 
-              <ControlGroup
-                icon={Zap}
-                label="Daily improvement"
-                hint="Percent increase applied to each session." 
-                headerRight={<span className="text-sm font-display text-slate-800">{dailyRate.toFixed(1)}%</span>}
-              >
+            <ControlGroup icon={Zap} label="Daily improvement">
                 <input
                   type="range"
                   min="0"
@@ -522,18 +473,9 @@ export default function App() {
                   <span>0%</span>
                   <span>5%</span>
                 </div>
-              </ControlGroup>
+            </ControlGroup>
 
-              <ControlGroup
-                icon={Repeat}
-                label="Practice frequency"
-                hint={`About ${eventsPerDay.toFixed(2)} sessions per day.`}
-                headerRight={
-                  <span className="text-sm font-display text-slate-800">
-                    {frequency === 7 ? 'Daily' : `${frequency} / week`}
-                  </span>
-                }
-              >
+            <ControlGroup icon={Repeat} label="Practice frequency">
                 <input
                   type="range"
                   min="1"
@@ -547,13 +489,9 @@ export default function App() {
                   <span>1x</span>
                   <span>7x</span>
                 </div>
-              </ControlGroup>
+            </ControlGroup>
 
-              <ControlGroup
-                icon={Calendar}
-                label="Time horizon"
-                hint={`Between ${timeLimits[timeUnit].min} and ${timeLimits[timeUnit].max} ${timeLimits[timeUnit].label.toLowerCase()}.`}
-              >
+            <ControlGroup icon={Calendar} label="Time horizon">
                 <div className="flex items-center gap-3">
                   <input
                     type="number"
@@ -573,101 +511,74 @@ export default function App() {
                     <option value="years">Years</option>
                   </select>
                 </div>
-              </ControlGroup>
+            </ControlGroup>
 
-              <div className="rounded-xl border border-slate-200/70 bg-white/70 p-4">
-                <p className="text-xs uppercase tracking-wider text-slate-400">Presets</p>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {presets.map((preset) => (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => {
-                        setDailyRate(preset.dailyRate);
-                        setFrequency(preset.frequency);
-                      }}
-                      className="rounded-lg border border-slate-200/80 bg-white px-2 py-2 text-xs font-semibold text-slate-600 transition hover:text-slate-900"
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
+            <div className="grid grid-cols-3 gap-2">
+              {presets.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => {
+                    setDailyRate(preset.dailyRate);
+                    setFrequency(preset.frequency);
+                  }}
+                  className="rounded-lg border border-slate-200/80 bg-white px-2 py-2 text-xs font-semibold text-slate-600 transition hover:text-slate-900"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </SectionCard>
+
+          <div className="flex flex-col gap-6">
+            <SectionCard className="space-y-6">
+              <div className="flex items-center justify-end">
+                <div className="flex items-center gap-2 rounded-full border border-white/70 bg-white/70 p-1">
+                  <ToggleButton
+                    active={viewMode === 'chart'}
+                    onClick={() => setViewMode('chart')}
+                    icon={BarChart3}
+                    label="Graph"
+                  />
+                  <ToggleButton
+                    active={viewMode === 'table'}
+                    onClick={() => setViewMode('table')}
+                    icon={List}
+                    label="Milestones"
+                  />
                 </div>
               </div>
+
+              {viewMode === 'chart' ? (
+                <CustomLineChart chartData={chartData} milestoneData={tableData} />
+              ) : (
+                <MilestoneTable rows={tableData} />
+              )}
             </SectionCard>
 
-            <div className="flex flex-col gap-6">
-              <SectionCard className="space-y-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h2 className="text-lg font-semibold text-slate-900">Trajectory</h2>
-                    <p className="text-sm text-slate-500">A smooth projection of your compounding momentum.</p>
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full border border-white/70 bg-white/70 p-1">
-                    <ToggleButton
-                      active={viewMode === 'chart'}
-                      onClick={() => setViewMode('chart')}
-                      icon={BarChart3}
-                      label="Graph"
-                    />
-                    <ToggleButton
-                      active={viewMode === 'table'}
-                      onClick={() => setViewMode('table')}
-                      icon={List}
-                      label="Milestones"
-                    />
-                  </div>
-                </div>
-
-                {viewMode === 'chart' ? (
-                  <CustomLineChart chartData={chartData} milestoneData={tableData} />
-                ) : (
-                  <MilestoneTable rows={tableData} />
-                )}
-              </SectionCard>
-
-              <div className="grid gap-4 md:grid-cols-3">
-                <MetricCard
-                  icon={TrendingUp}
-                  label="Final multiplier"
-                  value={`${formatCompact(finalValue)}x`}
-                  hint={`Total growth: +${formatCompact(totalGrowth)}%`}
-                  accent="text-slate-900"
-                />
-                <MetricCard
-                  icon={Activity}
-                  label="Total sessions"
-                  value={formatCompact(totalSessions)}
-                  hint={`${eventsPerDay.toFixed(2)} sessions per day`}
-                  accent="text-slate-900"
-                />
-                <MetricCard
-                  icon={Clock}
-                  label="Time to double"
-                  value={formatDuration(doublingDay)}
-                  hint={doublingDay ? 'Within horizon' : 'Increase rate to reach 2x'}
-                  accent="text-emerald-600"
-                />
-              </div>
-
-              <SectionCard className="flex items-start gap-3">
-                <div className="rounded-full bg-amber-100/80 p-2 text-amber-700">
-                  <Info size={16} />
-                </div>
-                <div className="space-y-1 text-sm text-slate-600">
-                  <p className="font-medium text-slate-700">Momentum note</p>
-                  <p>
-                    Growth accelerates as consistency stacks. Adjust your cadence and horizon to
-                    explore realistic ranges for long-term mastery.
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    Projection window: {timeLabel} ({Math.round(maxDays)} days).
-                  </p>
-                </div>
-              </SectionCard>
+            <div className="grid gap-4 md:grid-cols-3">
+              <MetricCard
+                icon={TrendingUp}
+                label="Final multiplier"
+                value={`${formatCompact(finalValue)}x`}
+                accent="text-slate-900"
+              />
+              <MetricCard
+                icon={Activity}
+                label="Total sessions"
+                value={formatCompact(totalSessions)}
+                accent="text-slate-900"
+              />
+              <MetricCard
+                icon={Clock}
+                label="Time to double"
+                value={formatDuration(doublingDay)}
+                accent="text-emerald-600"
+              />
             </div>
-          </section>
-        </main>
-      </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
